@@ -5,6 +5,7 @@ import com.github.lorellw.letscode.entiites.User;
 import com.github.lorellw.letscode.repositories.MessageRepository;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,9 +26,15 @@ public class RootController {
     }
 
     @GetMapping("/root")
-    public String root(Map<String, Object> model) {
-        Iterable<Message> messages = messageRepository.findAll();
-        model.put("messages", messages);
+    public String root(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
+        Iterable<Message> messages;
+        if (filter != null && !filter.isEmpty()) {
+            messages = messageRepository.findByTag(filter);
+        }else {
+            messages =messageRepository.findAll();
+        }
+        model.addAttribute("messages", messages);
+        model.addAttribute("filter",filter);
         return "root";
     }
 
@@ -43,15 +50,4 @@ public class RootController {
         return "root";
     }
 
-    @PostMapping("filter")
-    public String filter(@RequestParam String tag, Map<String, Object> model){
-        Iterable<Message> messages;
-        if (tag != null && !tag.isEmpty()) {
-            messages = messageRepository.findByTag(tag);
-        }else {
-            messages =messageRepository.findAll();
-        }
-        model.put("messages", messages);
-        return "root";
-    }
 }

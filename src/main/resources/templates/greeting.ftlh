@@ -1,6 +1,6 @@
 <#import "parts/common.ftl" as c>
 
 <@c.page>
-<div>Hello, user</div>
-<a href="/root">Root page</a>
+<h5>Охайо</h5>
+<div>Spring Boot Messager</div>
 </@c.page>

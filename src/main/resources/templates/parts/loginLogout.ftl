@@ -9,6 +9,12 @@
         <label for="floatingPassword">Password</label>
     </div>
     <input type="hidden" name="_csrf" value="${_csrf.token}">
+    <#if isRegisterForm>
+    <div class="form-floating">
+        <input type="email" class="form-control" id="email" placeholder="some@some.com" name="email">
+        <label for="floatingPassword">Email</label>
+    </div>
+    </#if>
     <div class="mr-2">
     <#if !isRegisterForm><a href="/registration">Add new User</a></#if>
     </div>

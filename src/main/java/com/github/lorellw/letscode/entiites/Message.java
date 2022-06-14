@@ -3,8 +3,10 @@ package com.github.lorellw.letscode.entiites;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
@@ -15,7 +17,8 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-
+    @NotBlank(message = "Please fill the message")
+    @Length(max = 2048, message = "Too long")
     private String text;
     private String tag;
     private String filename;

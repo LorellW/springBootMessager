@@ -25,11 +25,11 @@
                         </div>
                     </#if>
     </div>
-    <input type="hidden" name="_csrf" value="${_csrf.token}">
+    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     <#if isRegisterForm>
     <div class="form-floating">
         <label class="col-sm-2 col-form-label">Password:</label>
-        <input type="password2"
+        <input type="password"
                name="password2"
                class="form-control ${(password2Error??)?string('is-invalid', '')}"
                placeholder="Retype password" />
@@ -71,7 +71,7 @@
 <#macro logout>
 <#include "security.ftl">
 <form action="/logout" method="post">
-    <input type="hidden" name="_csrf" value="${_csrf.token}">
+    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     <button class="btn btn-primary" type="submit"><#if user??>Log Out<#else>Log in</#if></button>
 </form>
 </#macro>

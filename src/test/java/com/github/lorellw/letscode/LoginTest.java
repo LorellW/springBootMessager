@@ -1,6 +1,6 @@
 package com.github.lorellw.letscode;
 
-import com.github.lorellw.letscode.controllers.RootController;
+import com.github.lorellw.letscode.controllers.MessageController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class LoginTest {
     @Autowired
-    private RootController controller;
+    private MessageController controller;
     @Autowired
     private MockMvc mockMvc;
 

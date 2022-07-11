@@ -19,7 +19,7 @@ public class Message implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
     @NotBlank(message = "Please fill the message")
     @Length(max = 2048, message = "Too long")
     private String text;

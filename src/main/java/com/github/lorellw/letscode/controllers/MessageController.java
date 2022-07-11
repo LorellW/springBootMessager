@@ -5,6 +5,7 @@ import com.github.lorellw.letscode.entiites.User;
 import com.github.lorellw.letscode.repositories.MessageRepository;
 import com.github.lorellw.letscode.services.MessageService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
 import org.springframework.data.domain.Pageable;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -49,10 +52,10 @@ public class MessageController {
     public String root(@RequestParam(required = false, defaultValue = "") String filter,
                        Model model,
                        @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Message> page = messageService.messageList(pageable,filter);
+        Page<Message> page = messageService.messageList(pageable, filter);
 
         model.addAttribute("page", page);
-        model.addAttribute("url","/root");
+        model.addAttribute("url", "/root");
         model.addAttribute("filter", filter);
         return "root";
     }
@@ -65,24 +68,25 @@ public class MessageController {
             Model model,
             @RequestParam("file") MultipartFile file,
             @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable)
-    throws IOException {
+            throws IOException {
         message.setAuthor(user);
         if (bindingResult.hasErrors()) {
+            System.out.println(bindingResult);
             Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
             model.mergeAttributes(errorsMap);
             model.addAttribute("message", message);
         } else {
             saveFile(message, file);
-            model.addAttribute("message", null);
+            model.addAttribute("message", "");
             messageRepository.save(message);
         }
-        Page<Message> page = messageService.messageList(pageable,"");
+        Page<Message> page = messageService.messageList(pageable, "");
         model.addAttribute("url", "/root");
         model.addAttribute("page", page);
-        return "root";
+        return "redirect:/root";
     }
 
-    private void saveFile(@Valid Message message,@RequestParam("file") MultipartFile file) throws IOException {
+    private void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
         if (!file.isEmpty()) {
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
@@ -103,12 +107,12 @@ public class MessageController {
                                @PathVariable User author,
                                @RequestParam(required = false) Message message,
                                Model model,
-                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable){
+                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Message> page = messageService.messageListForUser(pageable, author);
         model.addAttribute("userChannel", author);
-        model.addAttribute("subscriptionsCount",author.getSubscriptions().size());
-        model.addAttribute("subscribersCount",author.getSubscribers().size());
+        model.addAttribute("subscriptionsCount", author.getSubscriptions().size());
+        model.addAttribute("subscribersCount", author.getSubscribers().size());
         model.addAttribute("page", page);
         model.addAttribute("message", message);
         model.addAttribute("isCurrentUser", currentUser.equals(author));
@@ -119,20 +123,20 @@ public class MessageController {
 
     @PostMapping("/user-messages/{user}")
     public String updateMessage(@AuthenticationPrincipal User currentUser,
-                                 @PathVariable Integer user,
-                                 @RequestParam("id") Message message,
-                                 @RequestParam("text") String text,
-                                 @RequestParam("tag") String tag,
-                                 @RequestParam("file") MultipartFile file) throws IOException {
-        if (message.getAuthor().equals(currentUser)){
-            if (StringUtils.hasLength(text)){
+                                @PathVariable Integer user,
+                                @RequestParam("id") Message message,
+                                @RequestParam("text") String text,
+                                @RequestParam("tag") String tag,
+                                @RequestParam("file") MultipartFile file) throws IOException {
+        if (message.getAuthor().equals(currentUser)) {
+            if (StringUtils.hasLength(text)) {
                 message.setText(text);
             }
-            if (StringUtils.hasLength(tag)){
+            if (StringUtils.hasLength(tag)) {
                 message.setTag(tag);
             }
 
-            saveFile(message,file);
+            saveFile(message, file);
 
             messageRepository.save(message);
         }

@@ -94,6 +94,6 @@ class UserServiceTest {
         boolean isActivated = service.activateUser("activate");
         assertFalse(isActivated);
         Mockito.verify(repository, Mockito.times(0)).save(ArgumentMatchers.any(User.class));
-        
+
     }
 }

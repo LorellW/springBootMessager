@@ -41,8 +41,8 @@ public class MessageController {
     }
 
     @GetMapping("/")
-    public String greeting(Map<String, Object> model) {
-        return "greeting";
+    public String index(Map<String, Object> model) {
+        return "index";
     }
 
     @GetMapping("/root")
